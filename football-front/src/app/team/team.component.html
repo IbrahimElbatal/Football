@@ -1,0 +1,138 @@
+
+<p>
+<a routerLink="/create-team" class="btn btn-primary" *ngIf="authService.role == 'Admin'">Create</a>
+</p>
+<table class="table table-hover table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Logo</th>
+            <th>Name</th>
+            <th>Coach</th>
+            <th>Country</th>
+            <th>FoundationDate</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let team of teams">
+            <td>
+                <img src="{{team.logoUrl}}" width="50" height="50" alt="">
+            </td>
+            <td>{{team.name}}</td>
+            <td>{{team.coachName}}</td>
+            <td>{{team.countryName}}</td>
+            <td>{{team.foundationDate |date}}</td>
+            <td>
+                <a [routerLink]="[ '/player', team.id ]" class="btn btn-primary">Players</a>
+                <a *ngIf="authService.role == 'Admin'" (click)="openModal(editTeam,team.id)" class="btn btn-primary">Edit</a>
+                <a *ngIf="authService.role == 'Admin'" (click)="deletePlayer(deleteTeam,team.id)" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="square-jelly-box" [fullScreen]="true">
+    <p style="color: white"> Loading... </p>
+</ngx-spinner>
+
+
+<ng-template #editTeam>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Edit Player</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <form (ngSubmit)="edit()" [formGroup]="editTeamFormGroup">
+            <div class="p-3 p-lg-5 border">
+        
+                <div class="form-group row">
+                    <div class="col-md-12">
+                        <label class="text-black">
+                            Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" 
+                          name="Name" formControlName="Name">
+                          <div *ngIf="editTeamFormGroup.controls['Name'].touched">
+                            <span class="text-danger" *ngIf="editTeamFormGroup.controls['Name'].hasError('required')">
+                                Name is required
+                            </span>
+                          </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-12">
+                        <label class="text-black">
+                            Coach <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" 
+                          name="CoachName" formControlName="CoachName">
+                          <div *ngIf="editTeamFormGroup.controls['CoachName'].touched">
+                            <span class="text-danger" *ngIf="editTeamFormGroup.controls['CoachName'].hasError('required')">
+                                Coach is required
+                            </span>
+                          </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-12">
+                        <label class="text-black">
+                            FoundationDate <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" 
+                          name="FoundationDate" formControlName="FoundationDate">
+                          <div *ngIf="editTeamFormGroup.controls['FoundationDate'].touched">
+                            <span class="text-danger" *ngIf="editTeamFormGroup.controls['FoundationDate'].hasError('required')">
+                                FoundationDate is required
+                            </span>
+                          </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-12">
+                        <label class="text-black">
+                            Country <span class="text-danger">*</span></label>
+                        <select name="Country" class="form-control" formControlName="CountryId">
+                            <option *ngFor="let country of countries$|async" [value]="country.id">{{country.name}}</option>
+                        </select>    
+                          <div *ngIf="editTeamFormGroup.controls['CountryId'].touched">
+                            <span class="text-danger" *ngIf="editTeamFormGroup.controls['CountryId'].hasError('required')">
+                                Country is required
+                            </span>
+                          </div>
+                    </div>
+                </div>
+        
+                <div class="form-group row">
+                    <div class="col-md-12">
+                        <label class="text-black">
+                            Logo <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control" (change)="onChange($event)"  
+                          name="Logo" formControlName="Logo">
+                          <!-- <div *ngIf="editTeamFormGroup.controls['Logo'].touched">
+                            <span class="text-danger" *ngIf="editTeamFormGroup.controls['Logo'].hasError('required')">
+                                Logo is required
+                            </span>
+                          </div> -->
+                    </div>
+                </div>
+              <div class="form-group row">
+                    <div class="col-lg-12">
+                        <input type="submit" class="btn btn-primary form-control login"  value="Save">
+                    </div>
+                </div>
+            </div>
+        
+        </form>
+        
+        
+    </div>
+  </ng-template>
+
+  <ng-template #deleteTeam>
+    <div class="modal-body text-center">
+      <p>Do you want to delete?</p>
+      <button type="button" class="btn btn-default" (click)="confirm()" >Yes</button>
+      <button type="button" class="btn btn-primary" (click)="decline()" >No</button>
+    </div>
+  </ng-template>

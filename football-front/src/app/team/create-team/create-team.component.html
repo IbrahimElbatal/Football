@@ -1,0 +1,138 @@
+<form (ngSubmit)="create()" [formGroup]="createTeamFormGroup">
+    <div class="p-3 p-lg-5 border">
+
+        <div class="form-group row">
+            <div class="col-md-12">
+                <label class="text-black">
+                    Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" 
+                  name="Name" formControlName="Name">
+                  <div *ngIf="createTeamFormGroup.controls['Name'].touched">
+                    <span class="text-danger" *ngIf="createTeamFormGroup.controls['Name'].hasError('required')">
+                        Name is required
+                    </span>
+                  </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-12">
+                <label class="text-black">
+                    Coach <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" 
+                  name="CoachName" formControlName="CoachName">
+                  <div *ngIf="createTeamFormGroup.controls['CoachName'].touched">
+                    <span class="text-danger" *ngIf="createTeamFormGroup.controls['CoachName'].hasError('required')">
+                        Coach is required
+                    </span>
+                  </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-12">
+                <label class="text-black">
+                    FoundationDate <span class="text-danger">*</span></label>
+                <input type="date" class="form-control" 
+                  name="FoundationDate" formControlName="FoundationDate">
+                  <div *ngIf="createTeamFormGroup.controls['FoundationDate'].touched">
+                    <span class="text-danger" *ngIf="createTeamFormGroup.controls['FoundationDate'].hasError('required')">
+                        FoundationDate is required
+                    </span>
+                  </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-12">
+                <label class="text-black">
+                    Country <span class="text-danger">*</span></label>
+                <select name="Country" class="form-control" formControlName="CountryId">
+                    <option *ngFor="let country of countries$|async" [value]="country.id">{{country.name}}</option>
+                </select>    
+                  <div *ngIf="createTeamFormGroup.controls['CountryId'].touched">
+                    <span class="text-danger" *ngIf="createTeamFormGroup.controls['CountryId'].hasError('required')">
+                        Country is required
+                    </span>
+                  </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-12">
+                <label class="text-black">
+                    Logo <span class="text-danger">*</span></label>
+                <input type="file" class="form-control" (change)="onChange($event)"  
+                  name="Logo" formControlName="Logo">
+                  <div *ngIf="createTeamFormGroup.controls['Logo'].touched">
+                    <span class="text-danger" *ngIf="createTeamFormGroup.controls['Logo'].hasError('required')">
+                        Logo is required
+                    </span>
+                  </div>
+            </div>
+        </div>
+        <div class="form-group" formArrayName="Players">
+            <h2 class="alert alert-info">Players</h2>
+            <div class="row" *ngFor="let group of playersArray.controls;let i=index">
+                <div class="row" [formGroupName]='i'>
+                    <div class="col-md-3">
+                        <label class="text-black">
+                            Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" 
+                          name="Name" formControlName="Name">
+                          <div *ngIf="playersArray.controls[i].get('Name').touched">
+                            <span class="text-danger" *ngIf="playersArray.controls[i].get('Name').hasError('required')">
+                                Name is required
+                            </span>
+                          </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="text-black">
+                            DateOfBirth <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" 
+                          name="DateOfBirth" formControlName="DateOfBirth">
+                          <div *ngIf="playersArray.controls[i].get('DateOfBirth').touched">
+                            <span class="text-danger" *ngIf="playersArray.controls[i].get('DateOfBirth').hasError('required')">
+                                DateOfBirth is required
+                            </span>
+                          </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="text-black">
+                            Nationality <span class="text-danger">*</span></label>
+                        <select name="Nationality" class="form-control" formControlName="NationalityId">
+                            <option *ngFor="let nationality of nationalities$|async" [value]="nationality.id">{{nationality.name}}</option>
+                        </select>        
+                          <div *ngIf="playersArray.controls[i].get('NationalityId').touched">
+                            <span class="text-danger" *ngIf="playersArray.controls[i].get('NationalityId').hasError('required')">
+                                Nationality is required
+                            </span>
+                          </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="text-black">
+                            Image <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control" (change)="onChangePlayerImage($event)"
+                          name="Image" formControlName="Image">
+                          <div *ngIf="playersArray.controls[i].get('Image').touched">
+                            <span class="text-danger" *ngIf="playersArray.controls[i].get('Image').hasError('required')">
+                                Image is required
+                            </span>
+                          </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+      <div class="form-group row">
+            <div class="col-lg-12">
+                <input type="button" (click)="addGroupToArray()" class="btn btn-success"  value="New Player">
+                <input type="submit" class="btn btn-primary form-control login" [disabled]="!createTeamFormGroup.valid" value="Create">
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<!-- [disabled]="!createTeamFormGroup.valid" -->
+
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="square-jelly-box" [fullScreen]="true">
+    <p style="color: white"> Loading... </p>
+</ngx-spinner>
